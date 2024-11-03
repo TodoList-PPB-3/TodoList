@@ -9,7 +9,7 @@ const App = () => {
     // Menampilkan splash screen selama beberapa detik
     setTimeout(() => {
       setIsLoading(false);
-    }, 3000); // Sesuaikan durasi splash screen
+    }, 10000); // Sesuaikan durasi splash screen
   }, []);
 
   return (
