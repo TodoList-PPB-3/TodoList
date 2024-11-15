@@ -1,24 +1,23 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import Index from './app/index';
-import HomeScreen from './app/HomeScreen';
-import DetailScreen from './app/DetailScreen';
-import SearchScreen from './app/SearchScreen';
-
-const Stack = createNativeStackNavigator();
+import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
+import SplashScreen from './app/screens/SplashScreen';
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Menampilkan splash screen selama beberapa detik
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 10000); // Sesuaikan durasi splash screen
+  }, []);
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Index">
-        <Stack.Screen name="Index" component={Index} options={{ headerShown: false }} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="DetailScreen" component={DetailScreen} />
-        <Stack.Screen name="SearchScreen" component={SearchScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    isLoading ? <SplashScreen /> : (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Aplikasi Utama Belum Siap</Text>
+      </View>
+    )
   );
 };
 
