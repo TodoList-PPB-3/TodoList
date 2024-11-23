@@ -6,15 +6,15 @@ import Index from './app/index';
 import HomeScreen from './app/HomeScreen';
 import DetailScreen from './app/DetailScreen';
 import SearchScreen from './app/SearchScreen';
+
 import { checkTableStructure, initDB } from './databases/db';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-
   useEffect(() => {
     initDB();
-    checkTableStructure()
+    checkTableStructure();
   }, []);
 
   return (

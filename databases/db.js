@@ -19,7 +19,7 @@ export const initDB = () => {
     });
 };
 
-// Fungsi untuk memeriksa struktur tabel
+
 export const checkTableStructure = () => {
     console.log("Checking table structure...");
 
