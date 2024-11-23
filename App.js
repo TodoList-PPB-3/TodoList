@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -6,10 +6,17 @@ import Index from './app/index';
 import HomeScreen from './app/HomeScreen';
 import DetailScreen from './app/DetailScreen';
 import SearchScreen from './app/SearchScreen';
+import { checkTableStructure, initDB } from './databases/db';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+
+  useEffect(() => {
+    initDB();
+    checkTableStructure()
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Index">

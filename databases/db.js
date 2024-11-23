@@ -1,72 +1,37 @@
-import SQLite from 'react-native-sqlite-storage';
+import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase({ name: 'notes_database.db', location: 'default' });
+const db = SQLite.openDatabase('myDatabase.db');
 
-const executeQuery = (sql, params = []) => new Promise((resolve, reject) => {
-    db.transaction(tx => {
+export const initDB = () => {
+    console.log("Initializing Database...");
+    db.transaction((tx) => {
         tx.executeSql(
-            sql,
-            params,
-            (tx, result) => resolve(result),
-            (tx, error) => reject(error)
+            `CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
+                age INTEGER
+            );`,
+            [],
+            () => console.log("Table created successfully!"),
+            (txObj, error) => console.error("Error creating table: ", error)
         );
     });
-});
-
-const createTable = async () => {
-    await executeQuery(
-        `CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT);`
-    );
 };
 
-const addNote = async (title, description) => {
-    try {
-        await executeQuery(
-            `INSERT INTO notes (title, description) VALUES (?, ?)`,
-            [title, description]
+// Fungsi untuk memeriksa struktur tabel
+export const checkTableStructure = () => {
+    console.log("Checking table structure...");
+
+    db.transaction((tx) => {
+        tx.executeSql(
+            "PRAGMA table_info(users);",
+            [],
+            (txObj, resultSet) => {
+                const columns = resultSet.rows._array;
+                console.log("Columns in users table:", columns);
+            },
+            (txObj, error) => console.error("Error checking table structure:", error)
         );
-        console.log('Catatan berhasil ditambahkan');
-    } catch (error) {
-        console.error('Error menambahkan catatan:', error);
-    }
-};
-
-const getNotes = async () => {
-    try {
-        const result = await executeQuery(`SELECT * FROM notes`);
-        const notes = result.rows._array;
-        console.log('Catatan:', notes);
-        return notes;
-    } catch (error) {
-        console.error('Error mengambil catatan:', error);
-    }
-};
-
-const updateNote = async (id, title, description) => {
-    try {
-        await executeQuery(
-            `UPDATE notes SET title = ?, description = ? WHERE id = ?`,
-            [title, description, id]
-        );
-        console.log('Catatan berhasil diperbarui');
-    } catch (error) {
-        console.error('Error memperbarui catatan:', error);
-    }
-};
-
-const deleteNote = async (id) => {
-    try {
-        await executeQuery(`DELETE FROM notes WHERE id = ?`, [id]);
-        console.log('Catatan berhasil dihapus');
-    } catch (error) {
-        console.error('Error menghapus catatan:', error);
-    }
-};
-
-export default {
-    createTable,
-    addNote,
-    getNotes,
-    updateNote,
-    deleteNote,
+    });
 };

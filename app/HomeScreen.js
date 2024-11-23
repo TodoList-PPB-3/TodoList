@@ -3,12 +3,6 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
-const notesData = [
-    { id: '1', title: 'Title 1', content: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
-    { id: '2', title: 'Title 2', content: 'Lorem ipsum has been the industry\'s standard dummy text ever since the 1500s.' },
-    { id: '3', title: 'Title 3', content: 'An unknown printer took a galley of type and scrambled it to make a type specimen book.' },
-    { id: '4', title: 'Title 4', content: 'It has survived not only five centuries, but also the leap into electronic typesetting.' },
-];
 
 const HomeScreen = () => {
     const navigation = useNavigation();
@@ -36,6 +30,10 @@ const HomeScreen = () => {
             <TouchableOpacity style={styles.fab}>
                 <Ionicons name="add-outline" size={28} color="#fff" onPress={() => navigation.navigate('DetailScreen')} />
             </TouchableOpacity>
+            <View style={{ padding: 20 }}>
+                <Text>SQLite Example</Text>
+                <Button title="Get Table Structure" onPress={getTableStructure} />
+            </View>
         </View>
     );
 };
@@ -93,5 +91,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
 });
+
+
 
 export default HomeScreen;
