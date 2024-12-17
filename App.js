@@ -13,8 +13,12 @@ const Stack = createNativeStackNavigator();
 const App = () => {
 
   useEffect(() => {
-    initDB();
-    checkTableStructure()
+    const initializeApp = async () => {
+      await initDB(); // Inisialisasi database
+      await checkTableStructure();
+    };
+
+    initializeApp();
   }, []);
 
   return (

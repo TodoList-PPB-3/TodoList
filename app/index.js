@@ -15,8 +15,6 @@ const Index = () => {
     });
 
     useEffect(() => {
-        initDB();
-        checkTableStructure();
         const timer = setTimeout(() => {
             console.log(navigation.getState());
             navigation.navigate('HomeScreen');

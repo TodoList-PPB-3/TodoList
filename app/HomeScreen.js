@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -21,19 +21,15 @@ const HomeScreen = () => {
                 <Ionicons name="search-outline" size={24} color="#000" onPress={() => navigation.navigate('SearchScreen')} />
             </View>
             <FlatList
-                data={notesData}
                 renderItem={renderNote}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.notesList}
                 numColumns={2}
             />
-            <TouchableOpacity style={styles.fab}>
+            <Pressable style={styles.fab}>
                 <Ionicons name="add-outline" size={28} color="#fff" onPress={() => navigation.navigate('DetailScreen')} />
-            </TouchableOpacity>
-            <View style={{ padding: 20 }}>
-                <Text>SQLite Example</Text>
-                <Button title="Get Table Structure" onPress={getTableStructure} />
-            </View>
+            </Pressable>
+
         </View>
     );
 };
