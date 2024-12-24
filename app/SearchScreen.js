@@ -1,103 +1,116 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import {
+    View,
+    Text,
+    FlatList,
+    TextInput,
+    StyleSheet,
+    TouchableOpacity
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { blackColor, whiteColor } from '../constants/Colors';
-import { fontRegular, fontBold } from '../constants/Fonts';
+import { useNavigation } from '@react-navigation/native';
+import { getNotes } from '../databases/db';
 
 const SearchScreen = () => {
     const navigation = useNavigation();
+    const [query, setQuery] = useState('');
+    const [notes, setNotes] = useState([]);
+    const [filteredNotes, setFilteredNotes] = useState([]);
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [data, setData] = useState([]);
-    const items = [
+    useEffect(() => {
+        loadNotes();
+    }, []);
 
-    ];
+    const loadNotes = async () => {
+        const data = await getNotes();
+        setNotes(data);
+    };
 
     const handleSearch = (text) => {
-        setSearchQuery(text);
-        const filteredData = items.filter(item => item.name.toLowerCase().includes(text.toLowerCase()));
-        setData(filteredData);
+        setQuery(text);
+        const results = notes.filter((note) =>
+            note.title.toLowerCase().includes(text.toLowerCase()) ||
+            note.created_at.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredNotes(results);
     };
+
+    const renderNote = ({ item }) => (
+        <TouchableOpacity onPress={() => navigation.navigate('DetailScreen', { note: item })}>
+            <View style={styles.noteCard}>
+                <Text style={styles.noteTitle}>{item.title}</Text>
+                <Text style={styles.noteContent}>{item.description}</Text>
+                <Text style={styles.noteDate}>{new Date(item.created_at).toLocaleString()}</Text>
+            </View>
+        </TouchableOpacity>
+    );
 
     return (
         <View style={styles.container}>
-            <View style={styles.headerContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.chevronContainer}>
-                    <Ionicons name="chevron-back-outline" size={28} color="#787878" />
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="chevron-back-outline" size={24} />
                 </TouchableOpacity>
-                <View style={styles.searchContainer}>
-                    <TextInput
-                        style={styles.searchInput}
-                        placeholder="Search"
-                        value={searchQuery}
-                        placeholderTextColor="#6c757d"
-                        onChangeText={handleSearch}
-                    />
-                    <Ionicons name="search" size={18} color="#787878" />
-                </View>
+                <Text style={styles.headerTitle}>Search</Text>
             </View>
-
-            {data.length === 0 ? (
-                <View style={styles.notFoundContainer}>
-                    <Text style={styles.notFoundText}>Tidak ditemukan</Text>
-                </View>
-            ) : (
-                <FlatList
-                    data={data}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <Text style={styles.itemText}>{item.name}</Text>
-                    )}
-                />
-            )}
+            <TextInput
+                style={styles.searchInput}
+                placeholder="Search by title or date"
+                value={query}
+                onChangeText={handleSearch}
+            />
+            <FlatList
+                data={filteredNotes}
+                renderItem={renderNote}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.notesList}
+                ListEmptyComponent={<Text style={styles.emptyText}>No notes found</Text>}
+            />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+    container: { flex: 1, backgroundColor: '#FFF' },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
         padding: 16,
-        backgroundColor: '#fff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
     },
-    headerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    chevronContainer: {
-        marginRight: 8,
-    },
-    searchContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderColor: '#787878',
-        borderWidth: 1.5,
-        borderRadius: 8,
-        paddingHorizontal: 8,
+    headerTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginLeft: 16,
     },
     searchInput: {
-        flex: 1,
-        outlineStyle: 'none',
-        fontWeight: 'bold',
-        color: blackColor,
-        paddingVertical: 8,
+        padding: 8,
+        margin: 16,
+        borderRadius: 8,
+        backgroundColor: '#f0f0f0',
+        borderWidth: 1,
+        borderColor: '#ddd',
     },
-    notFoundContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+    notesList: { paddingHorizontal: 8 },
+    noteCard: {
+        padding: 16,
+        margin: 8,
+        borderRadius: 8,
+        backgroundColor: '#FFF',
+        elevation: 1,
     },
-    notFoundText: {
-        color: '#ccc',
-        fontSize: 12,
-    },
-    itemText: {
-        paddingVertical: 8,
+    noteTitle: { fontSize: 16, fontWeight: 'bold' },
+    noteContent: { fontSize: 14, color: '#555' },
+    noteDate: { fontSize: 12, color: '#888', marginTop: 4 },
+    emptyText: {
+        textAlign: 'center',
+        marginTop: 20,
+        fontSize: 16,
+        color: '#888',
     },
 });
+
 
 
 export default SearchScreen;
