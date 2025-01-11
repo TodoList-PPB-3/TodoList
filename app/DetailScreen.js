@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createNote, updateNote } from '../databases/db';
 
 const DetailScreen = () => {
     const navigation = useNavigation();

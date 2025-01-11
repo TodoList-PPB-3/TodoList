@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 import { useFonts } from 'expo-font';
-import { checkTableStructure, initDB } from '../databases/db';
 
 const { width, height } = Dimensions.get('window');
 

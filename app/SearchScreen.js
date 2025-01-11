@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { getNotes } from '../databases/db';
 
 const SearchScreen = () => {
     const navigation = useNavigation();
