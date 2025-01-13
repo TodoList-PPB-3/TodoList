@@ -5,19 +5,26 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
+  Dimensions,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons'; // Ikon untuk tombol
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HomeScreen = ({ navigation }) => {
   const notes = [
-    // Contoh data catatan
-    { id: '1', title: 'Title 1', description: 'Description 1' },
-    { id: '2', title: 'Title 2', description: 'Description 2' },
+    { id: '1', title: 'Title 1', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
+    { id: '2', title: 'Title 2', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
+    { id: '3', title: 'Title 3', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
+    { id: '4', title: 'Title 4', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
+    { id: '5', title: 'Title 5', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
+    { id: '6', title: 'Title 6', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
   ];
+
+  const numColumns = 2; // Fixed number of columns
+  const screenWidth = Dimensions.get('window').width;
 
   return (
     <View style={styles.container}>
-      {/* Header dengan tombol pencarian */}
+      {/* Header with Search Button */}
       <View style={styles.header}>
         <Text style={styles.title}>Notely</Text>
         <TouchableOpacity
@@ -28,19 +35,27 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Daftar catatan */}
+      {/* Notes Grid */}
       <FlatList
+        key={numColumns.toString()} // Ensure FlatList re-renders if numColumns changes
         data={notes}
         keyExtractor={(item) => item.id}
+        numColumns={numColumns}
         renderItem={({ item }) => (
-          <View style={styles.noteCard}>
+          <TouchableOpacity
+            style={[styles.noteCard, { width: (screenWidth - 48) / numColumns }]}
+            onPress={() => navigation.navigate('DetailScreen', { note: item })}
+          >
             <Text style={styles.noteTitle}>{item.title}</Text>
-            <Text style={styles.noteDescription}>{item.description}</Text>
-          </View>
+            <Text style={styles.noteDescription} numberOfLines={3}>
+              {item.description}
+            </Text>
+          </TouchableOpacity>
         )}
+        contentContainerStyle={styles.notesContainer}
       />
 
-      {/* Tombol Add */}
+      {/* Add Button */}
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate('AddPage')}
@@ -61,6 +76,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 23,
     marginBottom: 16,
   },
   title: {
@@ -70,11 +86,15 @@ const styles = StyleSheet.create({
   searchButton: {
     padding: 8,
   },
+  notesContainer: {
+    paddingBottom: 80, // Space for floating button
+  },
   noteCard: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#fff',
     borderRadius: 8,
     padding: 16,
-    marginBottom: 8,
+    marginBottom: 16,
+    marginHorizontal: 8,
     elevation: 2,
   },
   noteTitle: {

@@ -12,10 +12,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const SearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredNotes, setFilteredNotes] = useState([]);
+
   const notes = [
-    // Contoh data catatan
     { id: '1', title: 'Title 1', description: 'Description 1' },
     { id: '2', title: 'Title 2', description: 'Description 2' },
+    { id: '3', title: 'Another Title', description: 'Different Description' },
   ];
 
   const handleSearch = (query) => {
@@ -28,10 +29,10 @@ const SearchScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Header dengan tombol back dan input pencarian */}
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
+          <Ionicons name="chevron-back" size={24} color="#000" />
         </TouchableOpacity>
         <TextInput
           style={styles.searchInput}
@@ -43,7 +44,7 @@ const SearchScreen = ({ navigation }) => {
         <Ionicons name="search" size={24} color="#000" />
       </View>
 
-      {/* Daftar hasil pencarian */}
+      {/* Search Results */}
       {filteredNotes.length > 0 ? (
         <FlatList
           data={filteredNotes}
