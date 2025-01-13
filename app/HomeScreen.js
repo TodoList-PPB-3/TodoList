@@ -1,75 +1,102 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Ikon untuk tombol
 
+const HomeScreen = ({ navigation }) => {
+  const notes = [
+    // Contoh data catatan
+    { id: '1', title: 'Title 1', description: 'Description 1' },
+    { id: '2', title: 'Title 2', description: 'Description 2' },
+  ];
 
-const HomeScreen = () => {
-    const navigation = useNavigation();
-    const [notes, setNotes] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-
-    useEffect(() => {
-        loadNotes();
-    }, []);
-
-    const loadNotes = async () => {
-        const data = await getNotes();
-        setNotes(data);
-    };
-
-    const filteredNotes = notes.filter((note) =>
-        note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        note.created_at.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    const renderNote = ({ item }) => (
-        <TouchableOpacity onPress={() => navigation.navigate('DetailScreen', { note: item })}>
-            <View style={styles.noteCard}>
-                <Text style={styles.noteTitle}>{item.title}</Text>
-                <Text style={styles.noteContent}>{item.description}</Text>
-                <Text style={styles.noteDate}>{new Date(item.created_at).toLocaleString()}</Text>
-            </View>
+  return (
+    <View style={styles.container}>
+      {/* Header dengan tombol pencarian */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Notely</Text>
+        <TouchableOpacity
+          style={styles.searchButton}
+          onPress={() => navigation.navigate('SearchScreen')}
+        >
+          <Ionicons name="search" size={24} color="#000" />
         </TouchableOpacity>
-    );
+      </View>
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>Notely</Text>
-                <Ionicons
-                    name="search-outline"
-                    size={24}
-                    color="#000"
-                    onPress={() => navigation.navigate('SearchScreen')}
-                />
-            </View>
-            <TextInput
-                style={styles.searchInput}
-                placeholder="Search by title or date"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-            />
-            <FlatList
-                data={filteredNotes}
-                renderItem={renderNote}
-                keyExtractor={(item) => item.id.toString()}
-                contentContainerStyle={styles.notesList}
-            />
-        </View>
-    );
+      {/* Daftar catatan */}
+      <FlatList
+        data={notes}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.noteCard}>
+            <Text style={styles.noteTitle}>{item.title}</Text>
+            <Text style={styles.noteDescription}>{item.description}</Text>
+          </View>
+        )}
+      />
+
+      {/* Tombol Add */}
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate('AddPage')}
+      >
+        <Ionicons name="add" size={32} color="#fff" />
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#FFF' },
-    header: { flexDirection: 'row', justifyContent: 'space-between', padding: 16 },
-    headerTitle: { fontSize: 24, fontWeight: 'bold' },
-    searchInput: { padding: 8, margin: 16, borderRadius: 8, backgroundColor: '#eee' },
-    notesList: { paddingHorizontal: 8 },
-    noteCard: { padding: 16, margin: 8, borderRadius: 8, backgroundColor: '#FFF', elevation: 1 },
-    noteTitle: { fontSize: 16, fontWeight: 'bold' },
-    noteContent: { fontSize: 14, color: '#555' },
-    noteDate: { fontSize: 12, color: '#888', marginTop: 4 },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  searchButton: {
+    padding: 8,
+  },
+  noteCard: {
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 8,
+    elevation: 2,
+  },
+  noteTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  noteDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    backgroundColor: '#000',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+  },
 });
 
 export default HomeScreen;

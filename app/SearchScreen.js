@@ -1,115 +1,105 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-    View,
-    Text,
-    FlatList,
-    TextInput,
-    StyleSheet,
-    TouchableOpacity
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
 
-const SearchScreen = () => {
-    const navigation = useNavigation();
-    const [query, setQuery] = useState('');
-    const [notes, setNotes] = useState([]);
-    const [filteredNotes, setFilteredNotes] = useState([]);
+const SearchScreen = ({ navigation }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredNotes, setFilteredNotes] = useState([]);
+  const notes = [
+    // Contoh data catatan
+    { id: '1', title: 'Title 1', description: 'Description 1' },
+    { id: '2', title: 'Title 2', description: 'Description 2' },
+  ];
 
-    useEffect(() => {
-        loadNotes();
-    }, []);
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const results = notes.filter((note) =>
+      note.title.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredNotes(results);
+  };
 
-    const loadNotes = async () => {
-        const data = await getNotes();
-        setNotes(data);
-    };
-
-    const handleSearch = (text) => {
-        setQuery(text);
-        const results = notes.filter((note) =>
-            note.title.toLowerCase().includes(text.toLowerCase()) ||
-            note.created_at.toLowerCase().includes(text.toLowerCase())
-        );
-        setFilteredNotes(results);
-    };
-
-    const renderNote = ({ item }) => (
-        <TouchableOpacity onPress={() => navigation.navigate('DetailScreen', { note: item })}>
-            <View style={styles.noteCard}>
-                <Text style={styles.noteTitle}>{item.title}</Text>
-                <Text style={styles.noteContent}>{item.description}</Text>
-                <Text style={styles.noteDate}>{new Date(item.created_at).toLocaleString()}</Text>
-            </View>
+  return (
+    <View style={styles.container}>
+      {/* Header dengan tombol back dan input pencarian */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-    );
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          value={searchQuery}
+          onChangeText={handleSearch}
+          placeholderTextColor="#888"
+        />
+        <Ionicons name="search" size={24} color="#000" />
+      </View>
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="chevron-back-outline" size={24} />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Search</Text>
+      {/* Daftar hasil pencarian */}
+      {filteredNotes.length > 0 ? (
+        <FlatList
+          data={filteredNotes}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.noteCard}>
+              <Text style={styles.noteTitle}>{item.title}</Text>
+              <Text style={styles.noteDescription}>{item.description}</Text>
             </View>
-            <TextInput
-                style={styles.searchInput}
-                placeholder="Search by title or date"
-                value={query}
-                onChangeText={handleSearch}
-            />
-            <FlatList
-                data={filteredNotes}
-                renderItem={renderNote}
-                keyExtractor={(item) => item.id.toString()}
-                contentContainerStyle={styles.notesList}
-                ListEmptyComponent={<Text style={styles.emptyText}>No notes found</Text>}
-            />
-        </View>
-    );
+          )}
+        />
+      ) : (
+        <Text style={styles.emptyText}>Tidak ditemukan</Text>
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#FFF' },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-    },
-    headerTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginLeft: 16,
-    },
-    searchInput: {
-        padding: 8,
-        margin: 16,
-        borderRadius: 8,
-        backgroundColor: '#f0f0f0',
-        borderWidth: 1,
-        borderColor: '#ddd',
-    },
-    notesList: { paddingHorizontal: 8 },
-    noteCard: {
-        padding: 16,
-        margin: 8,
-        borderRadius: 8,
-        backgroundColor: '#FFF',
-        elevation: 1,
-    },
-    noteTitle: { fontSize: 16, fontWeight: 'bold' },
-    noteContent: { fontSize: 14, color: '#555' },
-    noteDate: { fontSize: 12, color: '#888', marginTop: 4 },
-    emptyText: {
-        textAlign: 'center',
-        marginTop: 20,
-        fontSize: 16,
-        color: '#888',
-    },
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  searchInput: {
+    flex: 1,
+    marginHorizontal: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    fontSize: 16,
+  },
+  noteCard: {
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 8,
+    elevation: 2,
+  },
+  noteTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  noteDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: '#aaa',
+    marginTop: 32,
+  },
 });
-
-
 
 export default SearchScreen;
