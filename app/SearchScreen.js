@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,21 +9,30 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const SearchScreen = ({ navigation }) => {
+const SearchScreen = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredNotes, setFilteredNotes] = useState([]);
 
-  const notes = [
-    { id: '1', title: 'Title 1', description: 'Description 1' },
-    { id: '2', title: 'Title 2', description: 'Description 2' },
-    { id: '3', title: 'Another Title', description: 'Different Description' },
-  ];
+  const allNotes = route.params?.notes || [];
+
+  useEffect(() => {
+    setFilteredNotes(allNotes);
+  }, [allNotes]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    const results = notes.filter((note) =>
-      note.title.toLowerCase().includes(query.toLowerCase())
+
+    if (query.trim() === '') {
+      setFilteredNotes(allNotes);
+      return;
+    }
+
+    const results = allNotes.filter(
+      (note) =>
+        note.title.toLowerCase().includes(query.toLowerCase()) ||
+        note.description.toLowerCase().includes(query.toLowerCase())
     );
+
     setFilteredNotes(results);
   };
 

@@ -39,7 +39,6 @@ const deleteNote = async (id) => {
     await saveNotes(filteredNotes);
 };
 
-
 const searchNotes = async (query) => {
     const notes = await getNotes();
     return notes.filter(note =>
@@ -48,3 +47,5 @@ const searchNotes = async (query) => {
         new Date(note.dateCreated).toLocaleDateString().includes(query)
     );
 };
+
+export { saveNotes, getNotes, addNote, updateNote, deleteNote, searchNotes };
