@@ -10,11 +10,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const SearchScreen = ({ navigation, route }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredNotes, setFilteredNotes] = useState([]);
-
-  const allNotes = route.params?.notes || [];
-
+  
   useEffect(() => {
     setFilteredNotes(allNotes);
   }, [allNotes]);
